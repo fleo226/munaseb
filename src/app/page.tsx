@@ -44,7 +44,10 @@ import {
   Award,
   Zap,
   Timer,
-  PartyPopper
+  PartyPopper,
+  Activity,
+  Calculator,
+  ArrowRight
 } from 'lucide-react'
 
 // Animation variants
@@ -145,32 +148,291 @@ function useCounter(end: number, duration: number = 2000) {
   return { count, ref }
 }
 
-// Floating Particles Component
+// Floating Particles Component - ENHANCED with health symbols
 function FloatingParticles() {
+  const healthSymbols = ['●', '◆', '✦', '○', '◇']
+  
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
+      {[...Array(30)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-2 h-2 bg-orange-400/20 rounded-full"
-          initial={{
-            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+          className="absolute text-2xl"
+          style={{
+            color: i % 3 === 0 ? 'rgba(249, 115, 22, 0.15)' : i % 3 === 1 ? 'rgba(59, 130, 246, 0.12)' : 'rgba(34, 197, 94, 0.1)',
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
           }}
+          initial={{ scale: 0, opacity: 0 }}
           animate={{
-            y: [null, -20, 20, -20],
-            x: [null, 10, -10, 10],
-            opacity: [0.2, 0.5, 0.2],
+            y: [0, -30, 0],
+            x: [0, Math.random() * 20 - 10, 0],
+            scale: [0.5, 1, 0.5],
+            opacity: [0.1, 0.3, 0.1],
+            rotate: [0, 180, 360],
           }}
           transition={{
-            duration: 5 + Math.random() * 5,
+            duration: 8 + Math.random() * 6,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: Math.random() * 2,
+            delay: Math.random() * 3,
           }}
-        />
+        >
+          {healthSymbols[i % healthSymbols.length]}
+        </motion.div>
       ))}
     </div>
+  )
+}
+
+// Wave Transition Component
+function WaveTransition({ flip = false, color = 'orange' }: { flip?: boolean, color?: 'orange' | 'blue' | 'green' }) {
+  const colors = {
+    orange: { from: '#f97316', to: '#ea580c' },
+    blue: { from: '#2563eb', to: '#1d4ed8' },
+    green: { from: '#22c55e', to: '#16a34a' },
+  }
+  
+  return (
+    <div className={`relative h-24 -mt-1 ${flip ? 'rotate-180' : ''}`}>
+      <svg className="absolute w-full h-full" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <motion.path
+          d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z"
+          fill={colors[color].from}
+          initial={{ d: "M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" }}
+          animate={{
+            d: [
+              "M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z",
+              "M0,80 C240,20 480,100 720,40 C960,100 1200,20 1440,80 L1440,120 L0,120 Z",
+              "M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z",
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </svg>
+    </div>
+  )
+}
+
+// Impact Counter Section - NEW
+function ImpactCounterSection() {
+  const stats = [
+    { label: 'Étudiants protégés', value: 45000, suffix: '+', icon: Users, color: 'from-blue-500 to-blue-600' },
+    { label: 'Soins couverts', value: 125000, suffix: '+', icon: Heart, color: 'from-red-500 to-pink-500' },
+    { label: 'Économies générées', value: 850, suffix: 'M FCFA', icon: TrendingUp, color: 'from-green-500 to-emerald-500' },
+    { label: 'Villes couvertes', value: 12, suffix: '+', icon: MapPin, color: 'from-orange-500 to-amber-500' },
+  ]
+  
+  const counter1 = useCounter(stats[0].value, 2500)
+  const counter2 = useCounter(stats[1].value, 3000)
+  const counter3 = useCounter(stats[2].value, 2500)
+  const counter4 = useCounter(stats[3].value, 2000)
+  
+  const counters = [counter1, counter2, counter3, counter4]
+  
+  return (
+    <section className="py-16 md:py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0">
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-64 h-64 rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${i % 2 === 0 ? 'rgba(249, 115, 22, 0.1)' : 'rgba(59, 130, 246, 0.1)'} 0%, transparent 70%)`,
+              left: `${i * 25}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{ duration: 5 + i, repeat: Infinity, delay: i * 0.5 }}
+          />
+        ))}
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          ref={counter1.ref}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6"
+        >
+          {stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.15 }}
+              whileHover={{ scale: 1.05, y: -5 }}
+              className="relative group"
+            >
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
+                <motion.div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4 shadow-lg`}
+                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                >
+                  <stat.icon className="w-6 h-6 text-white" />
+                </motion.div>
+                <div className="text-3xl md:text-4xl font-bold text-white mb-1">
+                  {counters[index].count.toLocaleString()}{stat.suffix}
+                </div>
+                <div className="text-sm text-slate-400">{stat.label}</div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+// Savings Calculator Section - NEW
+function SavingsCalculatorSection() {
+  const [consultations, setConsultations] = useState(3)
+  const [medications, setMedications] = useState(5000)
+  const [hospitalization, setHospitalization] = useState(0)
+  
+  const annualCost = consultations * 5000 + medications + hospitalization
+  const withMunaseb = Math.min(annualCost * 0.2, 100000) // 20% reste à charge, plafond 100k
+  const savings = annualCost - withMunaseb
+  const monthlySavings = Math.round(savings / 12)
+  
+  return (
+    <section className="py-20 md:py-28 bg-gradient-to-br from-orange-50 via-white to-blue-50 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimatedSection>
+          <div className="text-center mb-12">
+            <motion.span 
+              className="inline-flex items-center gap-2 bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-semibold mb-4"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+            >
+              <TrendingUp className="w-4 h-4" />
+              Calculez vos économies
+            </motion.span>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Combien pouvez-vous{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-500">économiser</span> ?
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Découvrez en quelques secondes combien MUNASEB peut vous faire économiser sur vos frais de santé.
+            </p>
+          </div>
+        </AnimatedSection>
+        
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Calculator */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-3xl shadow-2xl p-8"
+          >
+            <div className="space-y-8">
+              {/* Consultations */}
+              <div>
+                <label className="flex justify-between text-sm font-medium text-slate-700 mb-3">
+                  <span>Consultations par an</span>
+                  <span className="text-orange-500 font-bold">{consultations}</span>
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="12"
+                  value={consultations}
+                  onChange={(e) => setConsultations(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                />
+                <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <span>0</span>
+                  <span>12</span>
+                </div>
+              </div>
+              
+              {/* Medications */}
+              <div>
+                <label className="flex justify-between text-sm font-medium text-slate-700 mb-3">
+                  <span>Médicaments (FCFA/an)</span>
+                  <span className="text-orange-500 font-bold">{medications.toLocaleString()}</span>
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="50000"
+                  step="1000"
+                  value={medications}
+                  onChange={(e) => setMedications(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                />
+                <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <span>0 FCFA</span>
+                  <span>50 000 FCFA</span>
+                </div>
+              </div>
+              
+              {/* Hospitalization */}
+              <div>
+                <label className="flex justify-between text-sm font-medium text-slate-700 mb-3">
+                  <span>Hospitalisation (FCFA/an)</span>
+                  <span className="text-orange-500 font-bold">{hospitalization.toLocaleString()}</span>
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="200000"
+                  step="5000"
+                  value={hospitalization}
+                  onChange={(e) => setHospitalization(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                />
+                <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <span>0 FCFA</span>
+                  <span>200 000 FCFA</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Results */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <div className="bg-gradient-to-br from-slate-100 to-slate-50 rounded-2xl p-6">
+              <div className="text-sm text-slate-500 mb-1">Sans MUNASEB, vous payez</div>
+              <div className="text-3xl font-bold text-slate-900">{annualCost.toLocaleString()} FCFA/an</div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
+              <div className="text-sm text-green-100 mb-1">Avec MUNASEB, vous payez</div>
+              <div className="text-3xl font-bold">{withMunaseb.toLocaleString()} FCFA/an</div>
+              <div className="text-sm text-green-200 mt-2">Plafonné à 100 000 FCFA/an</div>
+            </div>
+            
+            <motion.div 
+              className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-8 text-white text-center"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <div className="text-sm text-orange-100 mb-2">Vos économies annuelles</div>
+              <div className="text-5xl font-bold mb-2">{savings.toLocaleString()} FCFA</div>
+              <div className="text-orange-200">Soit {monthlySavings.toLocaleString()} FCFA/mois</div>
+            </motion.div>
+            
+            <Link href="/preinscription">
+              <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-6 text-lg shadow-xl">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Adhérer maintenant - 5 000 FCFA/an
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -546,7 +808,7 @@ function HeroSection() {
             
             {/* Subtitle */}
             <motion.p 
-              className="text-lg md:text-xl text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-lg md:text-xl text-slate-600 mb-6 max-w-xl mx-auto lg:mx-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -560,6 +822,33 @@ function HeroSection() {
                 80%
               </motion.span> de vos frais médicaux
             </motion.p>
+
+            {/* PHRASE CHOC - Storytelling */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 rounded-r-xl p-5 mb-8 max-w-xl mx-auto lg:mx-0"
+            >
+              <motion.p 
+                className="text-slate-700 text-lg md:text-xl font-medium italic leading-relaxed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3 }}
+              >
+                &quot;On pense qu&apos;on est invincible à 20 ans... jusqu&apos;au jour où une simple fièvre vide nos économies en 48h.
+                <span className="text-orange-600 font-bold not-italic block mt-2">
+                  La santé ne prévient pas — mais MUNASEB vous protège quand elle frappe.
+                </span>
+                &quot;
+              </motion.p>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ delay: 2, duration: 1 }}
+                className="h-0.5 bg-gradient-to-r from-orange-500 to-transparent mt-3"
+              />
+            </motion.div>
 
             {/* CTA Buttons */}
             <motion.div 
@@ -1774,7 +2063,11 @@ export default function Home() {
       <UrgencyBanner />
       <Header />
       <HeroSection />
+      <WaveTransition color="orange" />
+      <ImpactCounterSection />
+      <WaveTransition color="blue" flip />
       <AvantagesSection />
+      <SavingsCalculatorSection />
       <HowItWorksSection />
       <ServicesSection />
       <TemoignagesSection />

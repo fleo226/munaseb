@@ -188,18 +188,32 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PATCH - Update status
+// PATCH - Update status or payment status
 export async function PATCH(request: NextRequest) {
   try {
-    const { id, status } = await request.json()
+    const body = await request.json()
+    const { id, status, paymentStatus } = body
 
-    if (!id || !status) {
-      return NextResponse.json({ error: 'ID et statut requis' }, { status: 400 })
+    if (!id) {
+      return NextResponse.json({ error: 'ID requis' }, { status: 400 })
+    }
+
+    const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() }
+    
+    if (status) {
+      updateData.status = status
+    }
+    
+    if (paymentStatus) {
+      updateData.payment_status = paymentStatus
+      if (paymentStatus === 'paid') {
+        updateData.payment_date = new Date().toISOString()
+      }
     }
 
     const { error } = await supabase
       .from('preinscriptions')
-      .update({ status, updated_at: new Date().toISOString() })
+      .update(updateData)
       .eq('id', id)
 
     if (error) throw error

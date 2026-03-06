@@ -12,18 +12,94 @@ datasource db {
 }
 
 model Preinscription {
-  id              String   @id @default(cuid())
-  nom             String
-  prenom          String
-  email           String   @unique
-  telephone       String
-  dateNaissance   String
-  universite      String
-  filiere         String
-  niveauEtudes    String
-  matricule       String?
-  accepteConditions Boolean @default(false)
-  status          String   @default("pending") // pending, confirmed, rejected
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                      String   @id @default(cuid())
+  
+  // Informations personnelles
+  nom                     String
+  prenom                  String
+  email                   String   @unique
+  telephone               String
+  dateNaissance           String   @map("date_naissance")
+  lieuNaissance           String?  @map("lieu_naissance")
+  sexe                    String?
+  nationalite             String?  @default("Burkinabe")
+  adresse                 String?
+  
+  // Piece d'identite
+  typePiece               String   @map("type_piece")
+  numeroPiece             String   @map("numero_piece")
+  dateDelivrancePiece     String?  @map("date_delivrance_piece")
+  dateExpirationPiece     String?  @map("date_expiration_piece")
+  fichierPieceUrl         String?  @map("fichier_piece_url")
+  
+  // Informations universitaires
+  universite              String
+  filiere                 String
+  niveauEtudes            String   @map("niveau_etudes")
+  matricule               String?
+  attestationUrl          String?  @map("attestation_url")
+  photoUrl                String?  @map("photo_url")
+  
+  // Contact d'urgence
+  contactUrgenceNom       String?  @map("contact_urgence_nom")
+  contactUrgenceTelephone String?  @map("contact_urgence_telephone")
+  contactUrgenceLien      String?  @map("contact_urgence_lien")
+  
+  // Ayants-droit
+  ajouterAyantsDroit      Boolean  @default(false) @map("ajouter_ayants_droit")
+  ayantsDroit             Json?    @map("ayants_droit")
+  
+  // Conditions
+  accepteConditions       Boolean  @default(false) @map("accepte_conditions")
+  
+  // Statut de la préinscription
+  status                  String   @default("pending")
+  
+  // Paiement
+  paymentStatus           String   @default("unpaid") @map("payment_status") // unpaid, pending, paid
+  paymentMethod           String?  @map("payment_method") // orange_money, moov_money
+  paymentReference        String?  @map("payment_reference")
+  paymentPhone            String?  @map("payment_phone")
+  paymentDate             DateTime? @map("payment_date")
+  
+  // Dates
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  payments                Payment[]
+
+  @@map("preinscriptions")
+}
+
+model Payment {
+  id                      String   @id @default(cuid())
+  preinscriptionId        String   @map("preinscription_id")
+  
+  // Détails du paiement
+  amount                  Int      // Montant en FCFA
+  currency                String   @default("XOF")
+  provider                String   // orange_money, moov_money
+  phoneNumber             String   @map("phone_number")
+  
+  // Références
+  transactionId           String?  @map("transaction_id")
+  providerReference       String?  @map("provider_reference")
+  
+  // Statut
+  status                  String   @default("pending") // pending, success, failed, cancelled
+  statusMessage           String?  @map("status_message")
+  
+  // Métadonnées
+  metadata                Json?
+  
+  // Dates
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+  paidAt                  DateTime? @map("paid_at")
+  
+  // Relation
+  preinscription          Preinscription @relation(fields: [preinscriptionId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
 }
