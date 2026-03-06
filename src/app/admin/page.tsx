@@ -118,13 +118,14 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/preinscription')
       const data = await response.json()
-      setPreinscriptions(data.preinscriptions || [])
+      const items = data.preinscriptions || []
+      setPreinscriptions(items)
       
       // Calculate stats
-      const total = data.preinscriptions?.length || 0
-      const pending = data.preinscriptions?.filter((p: Preinscription) => p.status === 'pending').length || 0
-      const confirmed = data.preinscriptions?.filter((p: Preinscription) => p.status === 'confirmed').length || 0
-      const rejected = data.preinscriptions?.filter((p: Preinscription) => p.status === 'rejected').length || 0
+      const total = items.length
+      const pending = items.filter((p: Preinscription) => p.status === 'pending').length
+      const confirmed = items.filter((p: Preinscription) => p.status === 'confirmed').length
+      const rejected = items.filter((p: Preinscription) => p.status === 'rejected').length
       setStats({ total, pending, confirmed, rejected })
     } catch (error) {
       console.error('Erreur lors du chargement:', error)
