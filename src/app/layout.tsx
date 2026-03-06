@@ -14,24 +14,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Z.ai Code Scaffold - AI-Powered Development",
-  description: "Modern Next.js scaffold optimized for AI-powered development with Z.ai. Built with TypeScript, Tailwind CSS, and shadcn/ui.",
-  keywords: ["Z.ai", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
-  authors: [{ name: "Z.ai Team" }],
+  title: "MUNASEB - Mutuelle Nationale de Santé des Étudiants du Burkina Faso",
+  description: "La mutuelle nationale des étudiants du Burkina Faso. Remboursement à 80% de vos frais médicaux, médicaments à tarifs réduits, plafond de 100 000 FCFA/an pour seulement 5 000 FCFA de cotisation annuelle.",
+  keywords: ["MUNASEB", "CENOU", "mutuelle", "santé", "étudiants", "Burkina Faso", "Ouagadougou", "assurance santé", "couverture médicale"],
+  authors: [{ name: "MUNASEB - CENOU" }],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/images/cenou-logo.jpg",
   },
   openGraph: {
-    title: "Z.ai Code Scaffold",
-    description: "AI-powered development with modern React stack",
-    url: "https://chat.z.ai",
-    siteName: "Z.ai",
+    title: "MUNASEB - Mutuelle Nationale de Santé des Étudiants du Burkina Faso",
+    description: "Protégez votre santé étudiante avec MUNASEB - Remboursement 80% de vos frais médicaux",
+    url: "https://munaseb.bf",
+    siteName: "MUNASEB",
     type: "website",
+    locale: "fr_BF",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Z.ai Code Scaffold",
-    description: "AI-powered development with modern React stack",
+    title: "MUNASEB - Mutuelle des Étudiants du Burkina Faso",
+    description: "Remboursement 80% de vos frais médicaux - Cotisation 5 000 FCFA/an",
   },
 };
 
@@ -41,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
