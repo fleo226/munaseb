@@ -55,9 +55,9 @@ model Preinscription {
   // Statut de la préinscription
   status                  String   @default("pending")
   
-  // Paiement
-  paymentStatus           String   @default("unpaid") @map("payment_status") // unpaid, pending, paid
-  paymentMethod           String?  @map("payment_method") // orange_money, moov_money
+  // Paiement (géré via WhatsApp)
+  paymentStatus           String   @default("unpaid") @map("payment_status")
+  paymentMethod           String?  @map("payment_method")
   paymentReference        String?  @map("payment_reference")
   paymentPhone            String?  @map("payment_phone")
   paymentDate             DateTime? @map("payment_date")
@@ -65,41 +65,6 @@ model Preinscription {
   // Dates
   createdAt               DateTime @default(now()) @map("created_at")
   updatedAt               DateTime @updatedAt @map("updated_at")
-  
-  // Relations
-  payments                Payment[]
 
   @@map("preinscriptions")
-}
-
-model Payment {
-  id                      String   @id @default(cuid())
-  preinscriptionId        String   @map("preinscription_id")
-  
-  // Détails du paiement
-  amount                  Int      // Montant en FCFA
-  currency                String   @default("XOF")
-  provider                String   // orange_money, moov_money
-  phoneNumber             String   @map("phone_number")
-  
-  // Références
-  transactionId           String?  @map("transaction_id")
-  providerReference       String?  @map("provider_reference")
-  
-  // Statut
-  status                  String   @default("pending") // pending, success, failed, cancelled
-  statusMessage           String?  @map("status_message")
-  
-  // Métadonnées
-  metadata                Json?
-  
-  // Dates
-  createdAt               DateTime @default(now()) @map("created_at")
-  updatedAt               DateTime @updatedAt @map("updated_at")
-  paidAt                  DateTime? @map("paid_at")
-  
-  // Relation
-  preinscription          Preinscription @relation(fields: [preinscriptionId], references: [id], onDelete: Cascade)
-
-  @@map("payments")
 }
